@@ -1,0 +1,39 @@
+{
+  "name": "rv.landing",
+  "version": "0.0.2",
+  "authors": [
+    "Alan Pledger <alan@reverb.io>",
+    "Hunter Brennick <hunter@reverb.io>",
+    "Craig McCown <craig@reverb.io>"
+  ],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "src/components",
+    "test",
+    "tests",
+    "bower_components",
+    "/src/vendor"
+  ],
+  "dependencies": {
+    "angular": "1.3.9",
+    "angular-ui-router": "~0.2.13",
+    "angular-animate": "~1.3.9",
+    "font-awesome": "~4.2.0",
+    "angular-touch": "~1.3.9",
+    "underscore": "~1.7.0",
+    "jquery": "~2.1.3",
+    "greensock": "~1.15.0",
+    "angular-mocks": "~1.3.10"
+  },
+  "homepage": "https://github.com/ReverbIO/landing",
+  "description": "Reverb.io landing page",
+  "main": "bower.json",
+  "license": "MIT",
+  "resolutions": {
+    "angular": "1.3.9",
+    "angular-animate": "~1.3.9"
+  }
+}

@@ -28,7 +28,7 @@ module.exports = function (grunt) {
         },
         watch: {
             scss: {
-                files: ['<%= config.app %>/styles/**/*.{scss,sass}', '<%= config.app %>/submodule/**/*.{scss,sass}'],
+                files: ['<%= config.app %>/core/styles/**/*.{scss,sass}', '<%= config.app %>/submodule/**/*.{scss,sass}'],
                 tasks: ['compass:dev']
             },
             index: {

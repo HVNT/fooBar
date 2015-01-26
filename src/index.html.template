@@ -5,98 +5,40 @@
 <!--[if gt IE 8]><!--> <html class="no-js" xmlns:ng="http://angularjs.org" xmlns:app="ignored"> <!--<![endif]-->
 <head>
     <link rel="icon" href="/assets/img/rv-favicon.ico"/>
-    <script type="text/javascript" src="https://use.typekit.net/wrn8cey.js"></script>
-    <script type="text/javascript">try{Typekit.load();}catch(e){}</script>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>reverbio | Maestro Demo</title>
+    <title>reverbio | Seed</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta http-equiv="cache-control" content="no-cache" />
     <meta http-equiv="expires" content="-1" />
     <meta http-equiv="pragma" content="no-cache" />
     <!-- build:css(src) /assets/css/build.css -->
-    <link rel="stylesheet" href="/vendor/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="/vendor/angular-loading-bar/build/loading-bar.css"/>
-    <link rel="stylesheet" href="/styles/main.css"/>
+    <link rel="stylesheet" href="/core/styles/styles.css"/>
     <!-- endbuild -->
 
     <!-- ClickJacking Defense end -->
     <base href="/">
 </head>
 <body>
-<div class="loading-background ng-cloak" ng-hide="isRootLoaded()" ng-cloak>
-    <div class="loading-container">
-        <img src="/assets/img/rv-logo-shadow.png" width="100" alt=""/>
-        <div class="spinner">
-            <div class="rect1"></div>
-            <div class="rect2"></div>
-            <div class="rect3"></div>
-            <div class="rect4"></div>
-            <div class="rect5"></div>
-        </div>
-    </div>
-</div>
-
-<!--[if lt IE 9]>
-<script src="/vendor/es5-shim/es5-shim.min.js"></script>
-<script src="/vendor/json3/lib/json3.min.js"></script>
-<![endif]-->
-
 <div ui-view></div>
 
-<script src="https://maps.google.com/maps/api/js?v=3.2&sensor=false"></script>
-
 <!-- build:js(src) /assets/js/build.js -->
-<script src="/vendor/leaflet/dist/leaflet.js"></script>
-<script src="/vendor/jquery/jquery.js"></script>
-<script src="/vendor/jquery-ui/jquery-ui.js"></script>
 <script src="/vendor/angular/angular.js"></script>
-<script src="/vendor/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-<script src="/vendor/angular-ui-utils/components/angular-ui-docs/build/ui-utils.js"></script>
 <script src="/vendor/angular-animate/angular-animate.js"></script>
 <script src="/vendor/angular-ui-router/release/angular-ui-router.js"></script>
-<script src="/vendor/underscore/underscore.js"></script>
-<script src="/vendor/leaflet.markerclusterer/dist/leaflet.markercluster.js"></script>
-<script src="/vendor/spin.js/dist/spin.js"></script>
 <script src="/vendor/angular-loading-bar/build/loading-bar.js"></script>
-<script src="/vendor/jqueryui-touch-punch/jquery.ui.touch-punch.js"></script>
-<script src="/vendor/tp-marketplace/src/marketplace-src.js"></script>
 
-<!--CORE-->
 <script src="/core/core.js"></script>
-<script src="/core/leaflet-google/leaflet-google.js"></script>
-<!--CORE SERVICES-->
-<script src="/core/services/mdu.js"></script>
-<script src="/core/services/saved-search.js"></script>
-<script src="/core/services/news.js"></script>
-<script src="/core/services/user.js"></script>
-<script src="/core/services/comment.js"></script>
-<script src="/core/services/favorite.js"></script>
-<script src="/core/services/hidden.js"></script>
-<script src="/core/services/finance.js"></script>
-<script src="/core/services/message.js"></script>
-<script src="/core/services/custom-field.js"></script>
-<script src="/core/services/custom-field-dimension.js"></script>
-<script src="/core/services/pin.js"></script>
-<script src="/core/services/geocoder.js"></script>
-<!--CORE DIRECTIVES-->
+<script src="/core/services/services.js"></script>
 <script src="/core/directives/directives.js"></script>
-<!--CORE FILTERS-->
 <script src="/core/filters/filters.js"></script>
-<!--CORE MISC-->
-<script src="/core/auth/auth.js"></script>
-<script src="/core/powers/powers.js"></script>
+<script src="/core/animations/animations.js"></script>
 
 <script src="/app/app.js"></script>
-<!--<script src="/app/account/account.config.js"></script>-->
-<!--<script src="/app/account/account.controllers.js"></script>-->
-<script src="/app/login/login.config.js"></script>
-<script src="/app/login/login.controllers.js"></script>
-<script src="/app/market/market.services.js"></script>
-<script src="/app/market/market.config.js"></script>
-<script src="/app/market/market.controllers.js"></script>
-<script src="/app/market/market.directives.js"></script>
+<script src="/app/app.controllers.js"></script>
+<script src="/app/app.config.js"></script>
 
 <!--ENVIRONMENT-->
 <!-- @if ENV == 'local' -->

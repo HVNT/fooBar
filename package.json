@@ -1,7 +1,7 @@
 {
-  "name": "rv.landing",
+  "name": "foobar",
   "version": "0.0.2",
-  "description": "Reverb.io's Landing Page",
+  "description": "GT CS 4460 Group Project",
   "main": "Gruntfile.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -9,14 +9,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/reverbio/landing.git"
+    "url": "https://github.com/HVNT/fooBar"
   },
-  "author": "Alan Pledger, Hunter Brennick, Craig McCown",
+  "author": "Hunter Brennick",
   "license": "None",
   "bugs": {
-    "url": "https://github.com/reverbio/landing.git"
+    "url": "https://github.com/HVNT/fooBar"
   },
-  "homepage": "https://github.com/apledger/program-manager",
+  "homepage": "https://github.com/HVNT/fooBar",
   "devDependencies": {
     "express": "^4.9.5",
     "grunt": "^0.4.5",

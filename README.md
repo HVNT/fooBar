@@ -1,5 +1,4 @@
-# infovis project
-# team fooBar
+# InfoVis project - Team fooBar
 
 # cmds to get this shit up and purring:
 '''

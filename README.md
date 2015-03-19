@@ -9,9 +9,6 @@
     gem install animation --pre
     npm install
     grunt install
-    cd ../maestro
-    npm install
-    grunt build
 ```
 
 # To develop using the mock backend

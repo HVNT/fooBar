@@ -18,18 +18,13 @@ In order to develop locally, you must install:
     bower install
 ```
 
-To develop using the mock backend
-grunt develop.mock
+To develop using the mock backend use **grunt develop.mock**
 
-To develop using the dev api:
--grunt develop.local
+To develop using the dev api use **grunt develop.local**
 
-To build a demo (with mock backend)
--grunt build.demo
+To build a demo (with mock backend) use **grunt build.demo**
 
-To build with the dev api
--grunt build.local
+To build with the dev api use **grunt build.local**
 
-To build for production
--grunt build.prod
+To build for production use **grunt build.prod**
 

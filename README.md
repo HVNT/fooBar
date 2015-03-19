@@ -5,13 +5,10 @@
     git clone git@github.com:HVNT/fooBar.git
     cd fooBar
     -> install npm (using brew or whatever) <-
+    npm install
     gem install compass
     gem install animation --pre
-    npm install
-    grunt install
-    cd ../maestro
-    npm install
-    grunt build
+    bower install
 ```
 
 # To develop using the mock backend

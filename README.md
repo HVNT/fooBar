@@ -1,5 +1,12 @@
 # InfoVis project - Team fooBar
 
+In order to develop locally, you must install:
+
+- node and npm
+- grunt and bower (using npm)
+- ruby and gem
+- compass and animation (using gem)
+
 # cmds to get this shit up and purring:
 ```
     git clone git@github.com:HVNT/fooBar.git
@@ -11,18 +18,13 @@
     bower install
 ```
 
-# To develop using the mock backend
-grunt develop.mock
+To develop using the mock backend use **grunt develop.mock**
 
-# To develop using the dev api
-grunt develop.local
+To develop using the dev api use **grunt develop.local**
 
-# To build a demo (with mock backend)
-grunt build.demo
+To build a demo (with mock backend) use **grunt build.demo**
 
-# To build with the dev api
-grunt build.local
+To build with the dev api use **grunt build.local**
 
-# To build for production
-grunt build.prod
-```
+To build for production use **grunt build.prod**
+

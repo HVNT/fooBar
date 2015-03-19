@@ -11,18 +11,17 @@
     bower install
 ```
 
-# To develop using the mock backend
+To develop using the mock backend: 
 grunt develop.mock
 
-# To develop using the dev api
+To develop using the dev api: 
 grunt develop.local
 
-# To build a demo (with mock backend)
+To build a demo (with mock backend): 
 grunt build.demo
 
-# To build with the dev api
+To build with the dev api: 
 grunt build.local
 
-# To build for production
+To build for production: 
 grunt build.prod
-```

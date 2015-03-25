@@ -1,1 +1,0 @@
-angular.module('rv.services', ['rv.config']);

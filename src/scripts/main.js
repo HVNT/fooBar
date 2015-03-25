@@ -236,7 +236,7 @@ function initTreeMapData () {
             if (ConferenceMap.hasOwnProperty(conference)) { //check if exists
                 if (!runningTreeMapIds[ConferenceMap[conference].id]) { //if conference not added, add
                     treeMapData.push({
-                        id: ConferenceMap[conference].id,
+                        id: ConferenceMap[conference].id.toString(),
                         name: conference,
                         color: ConferenceMap[conference].color
                     })
@@ -250,11 +250,11 @@ function initTreeMapData () {
                     runningTreeMapIds[CollegeMap[college].id] = 1; //don't re-add
 
                     treeMapData.push({
-                        id: CollegeMap[college].id,
+                        id: CollegeMap[college].id.toString(),
                         name: college,
                         value: CollegeMap[college].draftValue,
                         parent: ConferenceMap[CollegeConferenceMap[college]] ?
-                            ConferenceMap[CollegeConferenceMap[college]].id : 500008 //500008 = id for 'Other' conference
+                            ConferenceMap[CollegeConferenceMap[college]].id.toString() : '500008' //500008 = id for 'Other' conference
                     })
                 }
             }

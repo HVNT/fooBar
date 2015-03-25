@@ -230,7 +230,6 @@ function initTreeMapData () {
 
     initCollegesAndDraftValues();
 
-
     if (players && players.length > 0) {
         for (conference in ConferenceMap) {
             if (ConferenceMap.hasOwnProperty(conference)) { //check if exists
@@ -380,10 +379,10 @@ $.ajax({
                             data: treeMapData
                         }],
                         subtitle: {
-                            text: 'Click points to drill down. Source: <a href="http://apps.who.int/gho/data/node.main.12?lang=en">WHO</a>.'
+                            text: 'Click to drill down.'
                         },
                         title: {
-                            text: 'COMBINE DATA'
+                            text: 'Conferences/Colleges with the best Draft Prospects'
                         }
                     });
                 });

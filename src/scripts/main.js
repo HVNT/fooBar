@@ -6,6 +6,23 @@
  * File:
  */
 
+/* global mappings */
+var CollegeConferenceMap = {
+    'Florida': 'SEC',
+    'Georgia': 'SEC',
+    'Kentucky': 'SEC',
+    'Missouri': 'SEC',
+    'South Carolina': 'SEC',
+    'Tennessee': 'SEC',
+    'Vanderbilt': 'SEC',
+    'Alabama': 'SEC',
+    'Arkansas': 'SEC',
+    'Auburn': 'SEC',
+    'LSU': 'SEC',
+    'Mississippi State': 'SEC',
+    'Texas A&M': 'SEC'
+};
+
 /* global variables */
 var players = [];
 var playerMap = {};
@@ -73,13 +90,15 @@ function initDirtyPlayers (playersData) {
 /* GO */
 $.ajax({
     type: "GET",
-    url: "/data/combine_clean.csv",
+    url: "/data/combine_clean.csv", //we wanna request the data that we know has all the college info first
     dataType: "text",
     success: function(dataClean) {
         var papaConfig = {
             header: true
         };
 
+        /* NOTE: Papa is a javascript tool included in
+        our project used to parse CSV stuff to JSON */
         var cleanPlayers = Papa.parse(dataClean, papaConfig);
         initCleanPlayers(cleanPlayers.data);
 
@@ -87,11 +106,11 @@ $.ajax({
         /* chain ajax requests */
         $.ajax({
             type: "GET",
-            url: "/data/combine_dirty.csv",
+            url: "/data/combine_dirty.csv", //now that the clean player data is initialized, we can merge the dirty data
             dataType: "text",
             success: function(dataDirty) {
 
-                var dirtyPlayers = Papa.parse(dataDirty, papaConfig);
+                var dirtyPlayers = Papa.parse(dataDirty, papaConfig); //here we are using Papa again
                 initDirtyPlayers(dirtyPlayers.data);
                 debugger;
 

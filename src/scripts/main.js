@@ -94,7 +94,6 @@ var CollegeConferenceMap = {
     'Utah State' : 'Mountain West',
     'UNLV' : 'Mountain West',
     'Wyoming' : 'Mountain West',
-    'Fresno State' : 'Mountain West',
     'Florida Atlantic' : 'Conference USA',
     'Louisiana Tech' : 'Conference USA',
     'Florida International' : 'Conference USA',
@@ -109,7 +108,45 @@ var CollegeConferenceMap = {
     'UTSA' : 'Conference USA',
     'Western Kentucky' : 'Conference USA'
 };
-var CollegeMap = {};
+var CollegeMap = {},
+    ConferenceMap = { //just hardcode this shit
+        'SEC': {
+            id: 500000,
+            color: 'RED'
+        },
+        'PAC-12': {
+            id: 500001,
+            color: 'GREEN'
+        },
+        'ACC': {
+            id: 500002,
+            color: 'BLUE'
+        },
+        'Big Ten': {
+            id: 500003,
+            color: 'ORANGE'
+        },
+        'Big 12': {
+            id: 500004,
+            color: 'PURPLE'
+        },
+        'American': {
+            id: 500005,
+            color: 'YELLOW'
+        },
+        'Mountain West': {
+            id: 500006,
+            color: 'BROWN'
+        },
+        'Conference USA': {
+            id: 500007,
+            color: 'PINK'
+        },
+        'Other': {
+            id: 500008,
+            color: 'Gray'
+        }
+    };
 
 /* global variables */
 var players = [];
@@ -189,16 +226,42 @@ function mapConferences () {
 
 function initTreeMapData () {
     var treeMapData = [],
-        treeMapDataMap = {};
+        runningTreeMapIds = {};
 
     initCollegesAndDraftValues();
-    
-    if (players && players.length > 0) {
-        //wait first we can add all colleges then all conferences
-        for (college in CollegeMap) {
 
+
+    if (players && players.length > 0) {
+        for (conference in ConferenceMap) {
+            if (ConferenceMap.hasOwnProperty(conference)) { //check if exists
+                if (!runningTreeMapIds[ConferenceMap[conference].id]) { //if conference not added, add
+                    treeMapData.push({
+                        id: ConferenceMap[conference].id,
+                        name: conference,
+                        color: ConferenceMap[conference].color
+                    })
+                }
+            }
+        }
+
+        for (college in CollegeMap) {
+            if (CollegeMap.hasOwnProperty(college)) { //check if exists
+                if (!runningTreeMapIds[CollegeMap[college].id]) { //if college not added, add
+                    runningTreeMapIds[CollegeMap[college].id] = 1; //don't re-add
+
+                    treeMapData.push({
+                        id: CollegeMap[college].id,
+                        name: college,
+                        value: CollegeMap[college].draftValue,
+                        parent: ConferenceMap[CollegeConferenceMap[college]] ?
+                            ConferenceMap[CollegeConferenceMap[college]].id : 500008 //500008 = id for 'Other' conference
+                    })
+                }
+            }
         }
     }
+
+    return treeMapData;
 }
 
 function initCollegesAndDraftValues () {
@@ -286,7 +349,6 @@ $.ajax({
                 var dirtyPlayers = Papa.parse(dataDirty, papaConfig); //here we are using Papa again
                 initDirtyPlayers(dirtyPlayers.data);
                 mapConferences();
-                debugger;
 
                 /* now have all the data ready, bootstrap up document */
                 $(document).ready(function () {
@@ -296,10 +358,34 @@ $.ajax({
                     ////////////////////////////////////////////////////
                     ///////////////* HIGHCHARTS STUFF HERE*/////////////
                     ////////////////////////////////////////////////////
-                    $('.treemap-container').highcharts({
-
-
-                    })
+                    var chart = new Highcharts.Chart({
+                        chart: {
+                            renderTo: 'treemap-container'
+                        },
+                        series: [{
+                            type: "treemap",
+                            layoutAlgorithm: 'squarified',
+                            allowDrillToNode: true,
+                            dataLabels: {
+                                enabled: false
+                            },
+                            levelIsConstant: false,
+                            levels: [{
+                                level: 1,
+                                dataLabels: {
+                                    enabled: true
+                                },
+                                borderWidth: 3
+                            }],
+                            data: treeMapData
+                        }],
+                        subtitle: {
+                            text: 'Click points to drill down. Source: <a href="http://apps.who.int/gho/data/node.main.12?lang=en">WHO</a>.'
+                        },
+                        title: {
+                            text: 'COMBINE DATA'
+                        }
+                    });
                 });
             },
             error: function (request, status, error) {

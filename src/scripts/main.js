@@ -176,6 +176,27 @@ function Player (data) {
     return this;
 }
 
+/* this block of code is for getting average height of cornerbacks */
+function initLineGraph() {
+    var heightData = [];
+
+    heightData = initHeightData();
+}
+
+function initHeightData(position) {
+    var heightData = [],
+        date = null;
+
+    if (players && players.length > 0) {
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].pos === position) {
+                date = new Date(players[i].combineYear, 1, 1, 0, 0, 0, 0);
+                heightData.push([date.getTime(), players[i].height]);
+            }
+        }
+    }
+    return heightData;
+}
 
 function initCleanPlayers (playersData) {
     if (playersData && playersData.length > 0) {
@@ -345,7 +366,6 @@ $.ajax({
             url: "/data/combine_dirty.csv", //now that the clean player data is initialized, we can merge the dirty data
             dataType: "text",
             success: function(dataDirty) {
-
                 var dirtyPlayers = Papa.parse(dataDirty, papaConfig); //here we are using Papa again
                 initDirtyPlayers(dirtyPlayers.data);
                 mapConferences();
@@ -353,39 +373,62 @@ $.ajax({
                 /* now have all the data ready, bootstrap up document */
                 $(document).ready(function () {
 
-                    var treeMapData = initTreeMapData();
-
                     ////////////////////////////////////////////////////
                     ///////////////* HIGHCHARTS STUFF HERE*/////////////
                     ////////////////////////////////////////////////////
-                    var chart = new Highcharts.Chart({
-                        chart: {
-                            renderTo: 'treemap-container'
+
+                    /* treemap */
+//                    var treeMapData = initTreeMapData();
+//
+//                    var chart = new Highcharts.Chart({
+//                        chart: {
+//                            renderTo: 'treemap-container'
+//                        },
+//                        series: [{
+//                            type: "treemap",
+//                            layoutAlgorithm: 'squarified',
+//                            allowDrillToNode: true,
+//                            dataLabels: {
+//                                enabled: false
+//                            },
+//                            levelIsConstant: false,
+//                            levels: [{
+//                                level: 1,
+//                                dataLabels: {
+//                                    enabled: true
+//                                },
+//                                borderWidth: 3
+//                            }],
+//                            data: treeMapData
+//                        }],
+//                        subtitle: {
+//                            text: 'Click to drill down.'
+//                        },
+//                        title: {
+//                            text: 'Conferences/Colleges with the best Draft Prospects'
+//                        }
+//                    });
+
+                    /* linegraph */
+                    var heightData = initHeightData('CB'),
+                        lineGraphTitle = 'Combine Height CB';
+
+                    $('#linegraph-container').highcharts('StockChart', {
+                        rangeSelector : {
+                            selected : 4
                         },
-                        series: [{
-                            type: "treemap",
-                            layoutAlgorithm: 'squarified',
-                            allowDrillToNode: true,
-                            dataLabels: {
-                                enabled: false
-                            },
-                            levelIsConstant: false,
-                            levels: [{
-                                level: 1,
-                                dataLabels: {
-                                    enabled: true
-                                },
-                                borderWidth: 3
-                            }],
-                            data: treeMapData
-                        }],
-                        subtitle: {
-                            text: 'Click to drill down.'
+                        title : {
+                            text : lineGraphTitle
                         },
-                        title: {
-                            text: 'Conferences/Colleges with the best Draft Prospects'
-                        }
+                        series : [{
+                            name : 'Height',
+                            data : heightData,
+                            tooltip: {
+                                valueDecimals: 2
+                            }
+                        }]
                     });
+
                 });
             },
             error: function (request, status, error) {

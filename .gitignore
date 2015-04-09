@@ -8,10 +8,6 @@ tmp
 
 /build
 
-src/index.html
-src/styles/main.css
-src/vendor/
-
 /dist
 .editorconfig
 .gitattributes

@@ -43,9 +43,10 @@
 
     <div ng-controller="FooBarCtrl">
         <div class="row">
-            <div class="pull-left">
+            <div class="left-filter-controls-container">
                 <div class="foobar-list">
-                    <div ng-repeat="position in positions" class="foobar-list__item">
+                    <div ng-repeat="(key, value) in positions" class="foobar-list__item" ng-click="filterPosition(key)">
+                        <span>{{key}}</span>
                     </div>
                 </div>
             </div>

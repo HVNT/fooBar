@@ -8,6 +8,15 @@
 
 .linegraph-container {
     position: absolute;
-    /*top: 500px;*/
-    left: 50px;
+    width: 50%;
+    top: 0;
+    left: 25%;
+    right: 25%;
+    bottom: 0;
+    padding-top: 48px;
+}
+
+.linegraph-container .highcharts-title {
+    font-size: 19px !important;
+    padding-bottom: 16px !important;
 }

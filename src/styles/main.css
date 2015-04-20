@@ -14,6 +14,14 @@
     padding-top: 120px;
 
 }
+.right-filter-controls-container {
+    position: absolute;
+    left: 75%;
+    right: 15%;
+    top: 0;
+    padding-top: 120px;
+
+}
 
 .linegraph-container {
     position: absolute;
@@ -30,7 +38,7 @@
 }
 
 .foobar-list {
-    max-height: 300px;
+    max-height: 275px;
     overflow-y: scroll;
 }
 

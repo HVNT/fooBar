@@ -8,9 +8,13 @@
  */
 angular.module('FooBar', [])
     .controller('FooBarCtrl', function ($scope, $q, Player, PlayerUtilities) {
+        $scope.Player = Player;
         $scope.filters = {
             pos: 'CB',
-            metric: 'height'
+            metric: {
+                value: 'Height',
+                key: 'height'
+            }
         };
 
         Player.query().then(function () {
@@ -25,23 +29,33 @@ angular.module('FooBar', [])
             repaintGraph();
         };
 
-        $scope.filtersMetric = function (filter) {
-            $scope.filters.metric = filter || 'height';
+        $scope.filterMetric = function (filter) {
+            if (filter) {
+                $scope.filters.metric = {
+                    key: filter.key,
+                    value: filter.value
+                }
+            } else {
+                $scope.filters.metric = {
+                    value: 'Height',
+                    key: 'height'
+                }
+            }
             repaintGraph();
         };
 
         function repaintGraph() {
             $('#linegraph-container').highcharts('StockChart', {
                 rangeSelector: {
-                    selected: 4
+                    selected: 5
                 },
                 title: {
-                    text: 'Combine ' + $scope.filters.metric + ' ' + $scope.filters.pos
+                    text: 'Combine ' + $scope.filters.metric.value + ' ' + $scope.filters.pos
                 },
                 series: [
                     {
-                        name: $scope.filters.metric,
-                        data: Player.getMetric($scope.filters.pos, $scope.filters.metric),
+                        name: $scope.filters.metric.value,
+                        data: Player.getMetric($scope.filters.pos, $scope.filters.metric.key),
                         tooltip: {
                             valueDecimals: 2
                         }
@@ -123,8 +137,12 @@ angular.module('FooBar', [])
             if (position && this.players && this.players.length > 0) {
                 for (var i = 0; i < this.players.length; i++) {
                     if (this.players[i].pos === position) {
-                        date = new Date(this.players[i].combineYear, 1, 1, 0, 0, 0, 0);
-                        metricData.push([date.getTime(), this.players[i][metric]]);
+                        date = new Date(this.players[i].combineYear, 1, 1, 0, 0, 0, 0); //?
+
+                        //only push if player metric isn't null
+                        if (this.players[i][metric]) {
+                            metricData.push([date.getTime(), this.players[i][metric]]);
+                        }
                     }
                 }
             }
@@ -153,7 +171,6 @@ angular.module('FooBar', [])
                         /* NOTE: we could have this live in the constructor, but would rather know what's been updated vs
                          having null values on certain Players
                          */
-
                         //it looks like some values might be set to "0" if null -- such as draft pick and wonderlic etc
                         //better to have these values null? or like "undrafted"?
                         Player.playerMap[playersData[i].Name].arms = parseInt(playersData[i].Arms) || null;
@@ -179,6 +196,54 @@ angular.module('FooBar', [])
                 }
             }
         };
+
+        Player.intMetrics = [
+            {
+                key: 'height',
+                value: 'Height (cm)'
+            },
+            {
+                key: 'weight',
+                value: 'Weight (kgs)'
+            },
+            {
+                key: 'twentyYard',
+                value: '20 yard dash'
+            },
+            {
+                key: 'fortyYard',
+                value: '40 yard dash'
+            },
+            {
+                key: 'threeCone',
+                value: 'Three cone'
+            },
+            {
+                key: 'vertLeap',
+                value: 'Vertical leap'
+            },
+            {
+                key: 'broadJump',
+                value: 'Broad jump'
+            },
+            {
+                key: 'shuttle',
+                value: 'Shuttle'
+            },
+            {
+                key: 'benchPress',
+                value: 'Bench press'
+            },
+            {
+                key: 'arms',
+                value: 'Arms'
+            },
+            {
+                key: 'hands',
+                value: 'Hands'
+            }
+        ];
+
 
         return Player;
     })

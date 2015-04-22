@@ -11,15 +11,24 @@
 		<script type="text/javascript" src="scripts/papaparse.min.js"></script>
 		
 		<style type="text/css">
-			#container1, #container2 {
-				width: 800px;
-				height: 400px;
+			#combine {
+				width: 505px;
 				margin: 0 auto;
-				padding-bottom: 50px
+				margin-bottom: 25px;
 			}
 			
 			#container1 {
 				position: relative;
+			}
+			
+			#container1, #container2 {
+				width: 800px;
+				height: 400px;
+				margin: 0 auto;
+			}
+			
+			#container3 {
+				height: 300px;
 			}
 			
 			#master-container {
@@ -29,34 +38,153 @@
 				width: 100%;
 			}
 			
-			#container3 {
-				height: 300px;
+			#players {
+				width: 714px;
+				margin: 0 auto;
+				margin-bottom: 25px;
+			}
+			
+			h1, h2 {
+				font-family: sans-serif;
+				font-size: 16pt;
+				font-weight: normal;
+				text-align: center;
+			}
+			
+			h2 {
+				font-size: 12pt;
+				margin-top: -10px
+			}
+			
+			p {
+				display: inline;
+				font-family: sans-serif;
+				font-size: 10pt;
+			}
+			
+			select {
+				margin-right: 25px;
 			}
 		</style>
 	</head>
 	
 	<body>
+		<h1>NFL Combine Statistics</h1>
+		<h2>Select an area by dragging across the lower chart</h2>
+		<div id="combine">
+			<p>Positions:</p>
+			<select id="position"></select>
+			<p>Metrics:</p>
+			<select id="metric"></select>
+			<button type="button" id="refresh">Refresh</button>
+		</div>
 		<div id="container1">
 			<div id="detail-container"></div>
 			<div id="master-container"></div>
 		</div>
+		
+		<h1>Player Comparison</h1>
+		<div id="players">
+			<p>Player 1:</p>
+			<select id="player1"></select>
+			<p>Player 2:</p>
+			<select id="player2"></select>
+			<button type="button" id="update">Update</button>
+		</div>
 		<div id="container2"></div>
+		
+		<h1>Likelihood to Succeed in the NFL</h1>
 		<div id="container3"></div>
 		
 		<script type="text/javascript">
-			$.get('data/combine.csv', function(csv) {
+			$.get('data/combine.csv', function (csv) {
 				var combine = Papa.parse(csv);
 				
-				var comparison1 = 
-					(parseFloat(combine.data[1][6]) + parseFloat(combine.data[1][7])) *
-					(6/parseFloat(combine.data[1][5]) + 7/parseFloat(combine.data[1][8]) + 262/parseFloat(combine.data[1][9]));
-				var comparison2 = 
-					(parseFloat(combine.data[2][6]) + parseFloat(combine.data[2][7])) *
-					(6/parseFloat(combine.data[2][5]) + 7/parseFloat(combine.data[2][8]) + 262/parseFloat(combine.data[2][9]));
+				//VISUALIZATION 1
+				var	positionMap = {	'C':[], 'CB':[], 'DE':[], 'DT':[], 'FB':[], 'FS':[], 'ILB':[], 'NT':[], 'OC':[],
+									'OG':[], 'OLB':[], 'OT':[], 'QB':[], 'RB':[], 'SS':[], 'TE':[], 'WR':[]};
+				var positionIndex = 'QB', metricIndex = 7;
 				
-				var data, detailChart;
+				for (var i = 1; i < combine.data.length - 1; i++) {
+					if (combine.data[i][4] == 'C') positionMap['C'].push(combine.data[i]);
+					if (combine.data[i][4] == 'CB') positionMap['CB'].push(combine.data[i]);
+					if (combine.data[i][4] == 'DE') positionMap['DE'].push(combine.data[i]);
+					if (combine.data[i][4] == 'DT') positionMap['DT'].push(combine.data[i]);
+					if (combine.data[i][4] == 'FB') positionMap['FB'].push(combine.data[i]);
+					if (combine.data[i][4] == 'FS') positionMap['FS'].push(combine.data[i]);
+					if (combine.data[i][4] == 'ILB') positionMap['ILB'].push(combine.data[i]);
+					if (combine.data[i][4] == 'NT') positionMap['NT'].push(combine.data[i]);
+					if (combine.data[i][4] == 'OC') positionMap['OC'].push(combine.data[i]);
+					if (combine.data[i][4] == 'OG') positionMap['OG'].push(combine.data[i]);
+					if (combine.data[i][4] == 'OLB') positionMap['OLB'].push(combine.data[i]);
+					if (combine.data[i][4] == 'OT') positionMap['OT'].push(combine.data[i]);
+					if (combine.data[i][4] == 'QB') positionMap['QB'].push(combine.data[i]);
+					if (combine.data[i][4] == 'RB') positionMap['RB'].push(combine.data[i]);
+					if (combine.data[i][4] == 'SS') positionMap['SS'].push(combine.data[i]);
+					if (combine.data[i][4] == 'TE') positionMap['TE'].push(combine.data[i]);
+					if (combine.data[i][4] == 'WR') positionMap['WR'].push(combine.data[i]);
+				}
 				
-				data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+				var positionOptions = '';
+				for (position in positionMap) {
+					positionOptions += '<option value="' + position + '">' + position + ' (' + positionMap[position].length + ')</option>';
+				}
+				$('#position').html(positionOptions);
+				$('#position').val(positionIndex);
+				
+				var metricOptions = '';
+				for (var i = 5; i < combine.data[0].length - 1; i++) {
+					metricOptions += '<option value="' + i + '">' + combine.data[0][i] + '</option>';
+				}
+				$('#metric').html(metricOptions);
+				$('#metric').val(metricIndex);
+				
+				$('#refresh').click(function () {
+					positionIndex = $('#position option:selected').val();
+					metricIndex = $('#metric option:selected').val();
+					data = createData(positionIndex, metricIndex);
+					
+					$('#master-container').highcharts().series[0].update({
+						data: data
+					});
+					
+					createMaster();
+				});
+				
+				var data = createData(positionIndex, metricIndex), detailChart;
+				function createData(pIndex, mIndex) {
+					var count0 = 0, count1 = 0, count2 = 0, count3 = 0, count4 = 0, count5 = 0, count6 = 0, count7 = 0, count8 = 0,
+						count9 = 0, count10 = 0, count11 = 0, count12 = 0, count13 = 0, count14 = 0, count15 = 0;
+					var sum0 = 0, sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0, sum5 = 0, sum6 = 0, sum7 = 0, sum8 = 0,
+						sum9 = 0, sum10 = 0, sum11 = 0, sum12 = 0, sum13 = 0, sum14 = 0, sum15 = 0;
+					
+					for (var i = 0; i < positionMap[pIndex].length; i++) {
+						if (positionMap[pIndex][i][0] == '1999') {sum0 += parseFloat(positionMap[pIndex][i][mIndex]); count0++;}
+						if (positionMap[pIndex][i][0] == '2000') {sum1 += parseFloat(positionMap[pIndex][i][mIndex]); count1++;}
+						if (positionMap[pIndex][i][0] == '2001') {sum2 += parseFloat(positionMap[pIndex][i][mIndex]); count2++;}
+						if (positionMap[pIndex][i][0] == '2002') {sum3 += parseFloat(positionMap[pIndex][i][mIndex]); count3++;}
+						if (positionMap[pIndex][i][0] == '2003') {sum4 += parseFloat(positionMap[pIndex][i][mIndex]); count4++;}
+						if (positionMap[pIndex][i][0] == '2004') {sum5 += parseFloat(positionMap[pIndex][i][mIndex]); count5++;}
+						if (positionMap[pIndex][i][0] == '2005') {sum6 += parseFloat(positionMap[pIndex][i][mIndex]); count6++;}
+						if (positionMap[pIndex][i][0] == '2006') {sum7 += parseFloat(positionMap[pIndex][i][mIndex]); count7++;}
+						if (positionMap[pIndex][i][0] == '2007') {sum8 += parseFloat(positionMap[pIndex][i][mIndex]); count8++;}
+						if (positionMap[pIndex][i][0] == '2008') {sum9 += parseFloat(positionMap[pIndex][i][mIndex]); count9++;}
+						if (positionMap[pIndex][i][0] == '2009') {sum10 += parseFloat(positionMap[pIndex][i][mIndex]); count10++;}
+						if (positionMap[pIndex][i][0] == '2010') {sum11 += parseFloat(positionMap[pIndex][i][mIndex]); count11++;}
+						if (positionMap[pIndex][i][0] == '2011') {sum12 += parseFloat(positionMap[pIndex][i][mIndex]); count12++;}
+						if (positionMap[pIndex][i][0] == '2012') {sum13 += parseFloat(positionMap[pIndex][i][mIndex]); count13++;}
+						if (positionMap[pIndex][i][0] == '2013') {sum14 += parseFloat(positionMap[pIndex][i][mIndex]); count14++;}
+						if (positionMap[pIndex][i][0] == '2014') {sum15 += parseFloat(positionMap[pIndex][i][mIndex]); count15++;}
+					}
+					
+					data = [sum0/count0, sum1/count1, sum2/count2, sum3/count3, sum4/count4, sum5/count5, sum6/count6, sum7/count7, sum8/count8,
+							sum9/count9, sum10/count10, sum11/count11, sum12/count12, sum13/count13, sum14/count14, sum15/count15];
+					for (var i = 0; i < data.length; i++) {
+						if (isNaN(parseFloat(data[i]))) data[i] = null;
+					}
+					
+					return data;
+				}
 				
 				function createDetail(masterChart) {
 					var detailData = [], detailStart = Date.UTC(1999, 0);
@@ -81,10 +209,7 @@
 							enabled: false
 						},
 						title: {
-							text: 'Overall NFL Combine Statistics'
-						},
-						subtitle: {
-							text: 'Select an area by dragging across the lower chart'
+							text: null
 						},
 						xAxis: {
 							type: 'datetime'
@@ -107,11 +232,13 @@
 						plotOptions: {
 							series: {
 								marker: {
-									enabled: false,
+									enabled: true,
+									symbol: 'circle',
+									radius: 5,
 									states: {
 										hover: {
 											enabled: true,
-											radius: 3
+											radius: 5
 										}
 									}
 								}
@@ -243,16 +370,46 @@
 				
 				createMaster();
 				
+				//VISUALIZATION 2
+				var index1 = 1, index2 = 2;
+				var playerOptions = '';
+				for (var i = 1; i < combine.data.length - 1; i++) {
+					playerOptions += '<option value="' + i + '">' + combine.data[i][1] + ' (' + combine.data[i][0] + ')</option>';
+				}
+				$('#player1').html(playerOptions);
+				$('#player1').val(index1);
+				$('#player2').html(playerOptions);
+				$('#player2').val(index2);
+				
+				$('#update').click(function () {
+					index1 = $('#player1 option:selected').val();
+					index2 = $('#player2 option:selected').val();
+					
+					if (index1 != index2) {
+						$('#container2').highcharts().series[0].update({
+							name: combine.data[index1][1],
+							data: combine.data[index1].slice(5,12).map(Number)
+						});
+						$('#container2').highcharts().series[1].update({
+							name: combine.data[index2][1],
+							data: combine.data[index2].slice(5,12).map(Number)
+						});
+					}
+					else {
+						alert('You must pick different players.');
+					}
+				});
+				
 				$('#container2').highcharts({
 					chart: {
 						type: 'area',
 						spacingBottom: 30
 					},
 					title: {
-						text: 'Player Comparison'
+						text: null
 					},
 					xAxis: {
-						categories: combine.data[0].slice(3,10)
+						categories: combine.data[0].slice(5,12)
 					},
 					yAxis: {
 						title: {
@@ -274,12 +431,43 @@
 						enabled: false
 					},
 					series: [{
-						name: combine.data[1][1],
-						data: combine.data[1].slice(3,10).map(Number)
+						name: combine.data[index1][1],
+						data: combine.data[index1].slice(5,12).map(Number)
 					}, {
-						name: combine.data[2][1],
-						data: combine.data[2].slice(3,10).map(Number)
+						name: combine.data[index2][1],
+						data: combine.data[index2].slice(5,12).map(Number)
 					}]
+				});
+				
+				//VISUALIZATION 3
+				var comparison1 = findComparison(index1);
+				var comparison2 = findComparison(index2);
+				
+				function findComparison(index) {
+					var height = parseFloat(combine.data[index][5]);
+					var weight = parseFloat(combine.data[index][6]);
+					var fortyYard = parseFloat(combine.data[index][7]);
+					var verticalLeap = parseFloat(combine.data[index][8]);
+					var broadJump = parseFloat(combine.data[index][9]);
+					var round = parseFloat(combine.data[index][10]);
+					var pick = parseFloat(combine.data[index][11]);
+					var comparison = (verticalLeap + broadJump) * (6/fortyYard + 7/round + 262/pick);
+					
+					return comparison;
+				}
+				
+				$('#update').click(function () {
+					if (index1 != index2) {
+						comparison1 = findComparison(index1);
+						comparison2 = findComparison(index2);
+						
+						$('#container3').highcharts().series[0].update({
+							data: [
+								[combine.data[index1][1], comparison1],
+								[combine.data[index2][1], comparison2]
+							]
+						});
+					}
 				});
 				
 				$('#container3').highcharts({
@@ -292,7 +480,7 @@
 						}
 					},
 					title: {
-						text: 'Likelihood to Succeed in the NFL'
+						text: null
 					},
 					tooltip: {
 						pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -315,8 +503,8 @@
 						type: 'pie',
 						name: 'Percentage',
 						data: [
-							[combine.data[1][1], comparison1],
-							[combine.data[2][1], comparison2]
+							[combine.data[index1][1], comparison1],
+							[combine.data[index2][1], comparison2]
 						]
 					}]
 				});

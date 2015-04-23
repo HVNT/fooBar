@@ -38,25 +38,41 @@
 </head>
 <body>
 
-        <!--<div class="treemap-container" id="treemap-container"></div>-->
-<div class="container" ng-app="FooBar">
+<!--<div class="treemap-container" id="treemap-container"></div>-->
+<div ng-app="FooBar">
 
-    <div ng-controller="FooBarCtrl">
-        <div class="row">
-            <div class="left-filter-controls-container">
-                <h4>Positions</h4>
-                <div class="foobar-list">
-                    <div ng-repeat="(key, value) in positions" class="foobar-list__item" ng-click="filterPosition(key)">
-                        <span>{{key + ' (' + value.count + ')'}}</span>
-                    </div>
+    <div ng-controller="FooBarCtrl" class="container">
+        <div class="left-filter-controls-container">
+            <h4>Positions</h4>
+
+            <div class="foobar-list">
+                <div ng-repeat="(key, value) in positions" class="foobar-list__item" ng-click="filterPosition(key)">
+                    <span>{{key + ' (' + value.count + ')'}}</span>
                 </div>
             </div>
-            <div class="linegraph-container" id="linegraph-container"></div>
-            <div class="right-filter-controls-container">
-                <h4>Metrics</h4>
-                <div class="foobar-list">
-                    <div ng-repeat="metric in Player.intMetrics" class="foobar-list__item" ng-click="filterMetric(metric)">
-                        <span>{{metric.value}}</span>
+        </div>
+        <div class="linegraph-container" id="linegraph-container"></div>
+        <div class="right-filter-controls-container">
+            <h4>Metrics</h4>
+
+            <div class="foobar-list">
+                <div ng-repeat="metric in Player.intMetrics" class="foobar-list__item"
+                     ng-click="filterMetric(metric)">
+                    <span>{{metric.value}}</span>
+                </div>
+            </div>
+        </div>
+        <!-- Table -->
+        <div class="players-table-container">
+            <div class="players-table">
+                <div class="players-table-head">
+                    <span class="players-table-hcell">{{filters.pos}} player names - {{filters.metric.value}}</span>
+                </div>
+                <div class="players-table-body">
+                    <div class="players-table-row" ng-repeat="player in activePlayers">
+                        <span class="players-table-bcell">{{player.name}}</span>
+                        <span style="padding-left: 16px;">{{player[filters.metric.key]}}</span>
+                        <span style="float: right;">{{player.college}}</span>
                     </div>
                 </div>
             </div>

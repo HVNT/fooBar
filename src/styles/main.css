@@ -20,7 +20,58 @@
     right: 15%;
     top: 0;
     padding-top: 120px;
+}
 
+.table-scrollable {
+    margin: 0;
+    padding: 0;
+}
+
+.players-table-container {
+    position: absolute;
+    top: 475px;
+    left: 15%;
+    right: 15%;
+    bottom: 0;
+    height: 400px;
+}
+
+.players-table-container > .players-table {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.players-table > .players-table-head {
+    position: relative;
+    background: #e7e7e7;
+    padding: 12px;
+}
+
+.players-table > .players-table-body {
+    position: absolute;
+    top: 44px;
+    left: 0;
+    right: 0;
+    width: 100%;
+    bottom: 0;
+    overflow-y: auto;
+}
+
+.players-table-head > .players-table-hcell {
+    line-height: 16px;
+    font-size: 15px;
+    overflow: auto;
+}
+
+.players-table-head > .players-table-bcell {
+
+}
+
+.players-table-body > .players-table-row {
+    width: 100%;
+    padding: 8px;
+    border-bottom: 1px solid #e7e7e7;
 }
 
 .linegraph-container {

@@ -9,6 +9,7 @@
 angular.module('FooBar', [])
     .controller('FooBarCtrl', function ($scope, $q, Player, PlayerUtilities) {
         $scope.Player = Player;
+        $scope.activePlayers = [];
         $scope.filters = {
             pos: 'CB',
             metric: {
@@ -45,6 +46,10 @@ angular.module('FooBar', [])
         };
 
         function repaintGraph() {
+            var repaintData = Player.getMetric($scope.filters.pos, $scope.filters.metric.key);
+            //getMetric call updates activePlayers for us
+            $scope.activePlayers = Player.activePlayers;
+
             $('#linegraph-container').highcharts('StockChart', {
                 rangeSelector: {
                     selected: 5
@@ -55,7 +60,7 @@ angular.module('FooBar', [])
                 series: [
                     {
                         name: $scope.filters.metric.value,
-                        data: Player.getMetric($scope.filters.pos, $scope.filters.metric.key),
+                        data: repaintData,
                         tooltip: {
                             valueDecimals: 2
                         }
@@ -88,6 +93,7 @@ angular.module('FooBar', [])
 
         Player.players = [];
         Player.playerMap = {};
+        Player.activePlayers = [];
 
         Player.query = function () {
             var defer = $q.defer(),
@@ -130,9 +136,11 @@ angular.module('FooBar', [])
             return positionMap;
         };
 
+        /* note this updates the activePlayers collection as well */
         Player.getMetric = function (position, metric) {
             var metricData = [],
                 date = null;
+            this.activePlayers = [];
 
             if (position && this.players && this.players.length > 0) {
                 for (var i = 0; i < this.players.length; i++) {
@@ -142,6 +150,7 @@ angular.module('FooBar', [])
                         //only push if player metric isn't null
                         if (this.players[i][metric]) {
                             metricData.push([date.getTime(), this.players[i][metric]]);
+                            this.activePlayers.push(this.players[i]);
                         }
                     }
                 }

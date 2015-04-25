@@ -49,6 +49,7 @@ angular.module('FooBar', [])
             var repaintData = Player.getMetric($scope.filters.pos, $scope.filters.metric.key);
             //getMetric call updates activePlayers for us
             $scope.activePlayers = Player.activePlayers;
+            console.log(repaintData);
 
             $('#linegraph-container').highcharts('StockChart', {
                 rangeSelector: {
@@ -83,7 +84,7 @@ angular.module('FooBar', [])
             this.height = parseInt(data['Height (in)']) || null;
             this.weight = parseInt(data['Weight (lbs)']) || null;
             this.wonderlic = data.Wonderlic || null;
-            this.fortyYard = parseInt(data['40 Yard']) || null;
+            this.fortyYard = parseFloat(data['40 Yard'], 2) || null;
             this.benchPress = parseInt(data['Bench Press']) || null;
             this.vertLeap = parseInt(data['Vert Leap (in)']) || null;
             this.broadJump = parseInt(data['Broad Jump (in)']) || null;
@@ -179,13 +180,17 @@ angular.module('FooBar', [])
                     if (Player.playerMap[playersData[i].Name]) { //updating only existing Players
                         /* NOTE: we could have this live in the constructor, but would rather know what's been updated vs
                          having null values on certain Players
+
                          */
                         //it looks like some values might be set to "0" if null -- such as draft pick and wonderlic etc
                         //better to have these values null? or like "undrafted"?
                         Player.playerMap[playersData[i].Name].arms = parseInt(playersData[i].Arms) || null;
                         Player.playerMap[playersData[i].Name].hands = parseInt(playersData[i].Hands) || null;
-                        Player.playerMap[playersData[i].Name].twentyYard = parseInt(playersData[i].TwentyYD) || null;
-                        Player.playerMap[playersData[i].Name].tenYard = parseInt(playersData[i].TenYD) || null;
+
+                        //this data is fucked
+                        Player.playerMap[playersData[i].Name].twentyYard = parseFloat(playersData[i].TwentyYD) || null;
+                        Player.playerMap[playersData[i].Name].tenYard = parseFloat(playersData[i].TenYD) || null;
+
                         Player.playerMap[playersData[i].Name].broad = parseInt(playersData[i].Broad) || null;
                         Player.playerMap[playersData[i].Name].round = parseInt(playersData[i].Round) || null;
                         Player.playerMap[playersData[i].Name].pickRound = parseInt(playersData[i].PickRound) || null;
@@ -216,16 +221,8 @@ angular.module('FooBar', [])
                 value: 'Weight (kgs)'
             },
             {
-                key: 'twentyYard',
-                value: '20 yard dash'
-            },
-            {
                 key: 'fortyYard',
                 value: '40 yard dash'
-            },
-            {
-                key: 'threeCone',
-                value: 'Three cone'
             },
             {
                 key: 'vertLeap',
@@ -236,20 +233,8 @@ angular.module('FooBar', [])
                 value: 'Broad jump'
             },
             {
-                key: 'shuttle',
-                value: 'Shuttle'
-            },
-            {
                 key: 'benchPress',
                 value: 'Bench press'
-            },
-            {
-                key: 'arms',
-                value: 'Arms'
-            },
-            {
-                key: 'hands',
-                value: 'Hands'
             }
         ];
 

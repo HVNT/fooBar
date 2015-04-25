@@ -12,18 +12,17 @@
 
 .left-filter-controls-container {
     position: absolute;
-    left: 15%;
-    right: 75%;
+    left: 5%;
+    right: 85%;
     top: 0;
-    padding-top: 120px;
+    padding-top: 40px;
 
 }
 .right-filter-controls-container {
     position: absolute;
-    left: 75%;
-    right: 15%;
-    top: 0;
-    padding-top: 120px;
+    left: 5%;
+    right: 85%;
+    top: 400px;
 }
 
 .table-scrollable {
@@ -38,11 +37,12 @@
 
 .players-table-container {
     position: absolute;
-    top: 475px;
-    left: 15%;
-    right: 15%;
+    top: 0;
+    left: 65%;
+    right: 0;
     bottom: 0;
-    height: 300px;
+    height: 650px;
+    padding-top: 40px;
 }
 
 .players-table-container > .players-table {
@@ -92,9 +92,10 @@
 
 .linegraph-container {
     position: absolute;
-    left: 25%;
-    right: 25%;
+    left: 15%;
     top: 0;
+    right: 35%;
+    height: 500px;
     padding-top: 40px;
 
 }

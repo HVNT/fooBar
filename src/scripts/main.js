@@ -52,23 +52,66 @@ angular.module('FooBar', [])
             //getMetric call updates activePlayers for us
             $scope.activePlayers = Player.activePlayers;
 
-            $('#linegraph-container').highcharts('StockChart', {
-                rangeSelector: {
-                    selected: 5
+            var _repaintData = [];
+            for (var i = 0; i < Player.combineYears.length; i++) {
+                _repaintData.push(Player.getMetricAverage($scope.filters.pos, $scope.filters.metric.key, Player.combineYears[i]));
+            }
+
+            $('#linegraph-container').highcharts({
+                chart: {
+                    type: 'column'
                 },
                 title: {
                     text: 'Combine ' + $scope.filters.metric.value + ' ' + $scope.filters.pos
                 },
-                series: [
-                    {
-                        name: $scope.filters.metric.value,
-                        data: repaintData,
-                        tooltip: {
-                            valueDecimals: 2
-                        }
+                xAxis: {
+                    categories: Player.combineYears,
+                    crosshair: true
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: $scope.filters.pos
                     }
-                ]
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                    pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                    footerFormat: '</table>',
+                    shared: true,
+                    useHTML: true
+                },
+                plotOptions: {
+                    column: {
+                        pointPadding: 0.2,
+                        borderWidth: 0
+                    }
+                },
+                series: [{
+                    name: 'Avg ' + $scope.filters.metric.value,
+                    data: _repaintData
+
+                }]
             });
+
+//            $('#linegraph-container').highcharts('StockChart', {
+//                rangeSelector: {
+//                    selected: 5
+//                },
+//                title: {
+//                    text: 'Combine ' + $scope.filters.metric.value + ' ' + $scope.filters.pos
+//                },
+//                series: [
+//                    {
+//                        name: $scope.filters.metric.value,
+//                        data: repaintData,
+//                        tooltip: {
+//                            valueDecimals: 2
+//                        }
+//                    }
+//                ]
+//            });
         }
 
     })
@@ -160,6 +203,26 @@ angular.module('FooBar', [])
             return metricData;
         };
 
+        Player.getMetricAverage = function (position, metric, year) {
+            var metricAvgData = 0,
+                validPlayers = 0;
+
+            if (position && metric && year
+                && this.players && this.players.length > 0) {
+
+                for (var i = 0; i < this.players.length; i++) {
+                    if (this.players[i].combineYear == year
+                        && this.players[i].pos === position) {
+                        metricAvgData += this.players[i][metric];
+                        validPlayers++;
+                    }
+                }
+            } else {
+                throw new Error('Need @params position, metric, and year');
+            }
+            return metricAvgData / (validPlayers || 1);
+        };
+
         Player._initCleanPlayers = function (playersData) {
             if (playersData && playersData.length > 0) {
                 for (var i = 0; i < playersData.length; i++) {
@@ -246,6 +309,11 @@ angular.module('FooBar', [])
                 key: 'benchPress',
                 value: 'Bench press (reps)'
             }
+        ];
+
+        Player.combineYears = [
+            '1999', '2001', '2002', '2003', '2004', '2005', '2006',
+            '2009', '2010', '2011', '2012', '2013', '2014', '2015'
         ];
 
 

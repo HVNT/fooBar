@@ -77,7 +77,7 @@ angular.module('FooBar', [])
                 tooltip: {
                     headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
                     pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                        '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+                        '<td style="padding:0"><b>{point.y:.3f}</b></td></tr>',
                     footerFormat: '</table>',
                     shared: true,
                     useHTML: true
@@ -212,7 +212,7 @@ angular.module('FooBar', [])
 
                 for (var i = 0; i < this.players.length; i++) {
                     if (this.players[i].combineYear == year
-                        && this.players[i].pos === position) {
+                        && this.players[i].pos === position && this.players[i][metric]) {
                         metricAvgData += this.players[i][metric];
                         validPlayers++;
                     }

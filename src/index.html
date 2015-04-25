@@ -78,7 +78,7 @@
                 </div>
                 <div class="players-table-body">
                     <div class="players-table-row" ng-repeat="player in activePlayers | orderBy: filters.metric.key:filters.reverse | filter:filters.playerSearch">
-                        <span class="players-table-bcell">{{player.name}} - {{player[filters.metric.key]}} in {{player.combineYear}}</span>
+                        <span class="players-table-bcell"><strong>{{player.name}}</strong> - {{player[filters.metric.key]}} in {{player.combineYear}}</span>
                         <span class="pull-right">{{player.college}} ({{player.conference}})</span>
                     </div>
                 </div>

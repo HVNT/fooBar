@@ -14,6 +14,7 @@ angular.module('FooBar', [])
         $scope.filters = {
             pos: 'CB',
             metric: Player.metrics[0],
+            playerSearch: '',
             reverse: false
         };
 

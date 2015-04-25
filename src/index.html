@@ -67,6 +67,10 @@
         </div>
         <!-- Table -->
         <div class="players-table-container">
+            <input class="form-control" type="text"
+                   placeholder="Search for a player."
+                   style="margin-bottom: 16px;"
+                   ng-model="filters.playerSearch"/>
             <div class="players-table">
                 <div class="players-table-head" ng-click="toggleFilter()">
                     <i class="glyphicon" style="padding: 0 8px 0 4px;" ng-class="{'glyphicon-chevron-up': filters.reverse, 'glyphicon-chevron-down': !filters.reverse}"></i>
@@ -74,7 +78,7 @@
                     <span class="pull-right">College (Conference)</span>
                 </div>
                 <div class="players-table-body">
-                    <div class="players-table-row" ng-repeat="player in activePlayers | orderBy: filters.metric.key:filters.reverse">
+                    <div class="players-table-row" ng-repeat="player in activePlayers | orderBy: filters.metric.key:filters.reverse | filter:filters.playerSearch">
                         <span class="players-table-bcell">{{player.name}}</span>
                         <span style="padding-left: 16px;">{{player[filters.metric.key]}}</span>
                         <span class="pull-right">{{player.college}} ({{player.conference}})</span>

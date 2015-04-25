@@ -48,7 +48,9 @@ angular.module('FooBar', [])
         };
 
         function repaintGraph() {
-            var repaintData = Player.getMetric($scope.filters.pos, $scope.filters.metric.key);
+//            uncomment this for line graph
+//            var repaintData = Player.getMetric($scope.filters.pos, $scope.filters.metric.key);
+
             //getMetric call updates activePlayers for us
             $scope.activePlayers = Player.activePlayers;
 

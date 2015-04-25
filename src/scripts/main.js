@@ -10,12 +10,11 @@ angular.module('FooBar', [])
     .controller('FooBarCtrl', function ($scope, $q, Player, PlayerUtilities) {
         $scope.Player = Player;
         $scope.activePlayers = [];
+
         $scope.filters = {
             pos: 'CB',
-            metric: {
-                value: 'Height',
-                key: 'height'
-            }
+            metric: Player.metrics[0],
+            reverse: false
         };
 
         Player.query().then(function () {
@@ -32,24 +31,25 @@ angular.module('FooBar', [])
 
         $scope.filterMetric = function (filter) {
             if (filter) {
-                $scope.filters.metric = {
-                    key: filter.key,
-                    value: filter.value
-                }
+                $scope.filters.metric = filter
             } else {
                 $scope.filters.metric = {
-                    value: 'Height',
-                    key: 'height'
+                    key: 'height',
+                    value: 'Height'
                 }
             }
+
             repaintGraph();
+        };
+
+        $scope.toggleFilter = function () {
+            $scope.filters.reverse = !$scope.filters.reverse;
         };
 
         function repaintGraph() {
             var repaintData = Player.getMetric($scope.filters.pos, $scope.filters.metric.key);
             //getMetric call updates activePlayers for us
             $scope.activePlayers = Player.activePlayers;
-            console.log(repaintData);
 
             $('#linegraph-container').highcharts('StockChart', {
                 rangeSelector: {
@@ -164,11 +164,20 @@ angular.module('FooBar', [])
                 for (var i = 0; i < playersData.length; i++) {
 
                     if (!Player.playerMap[playersData[i].name]) { //if currently not in map init and add to players collection and playerMap
-                        var newPlayer = new Player(playersData[i]);
-                        newPlayer.id = i.toString();
+                        if (playersData[i].POS == 'K' ||
+                            playersData[i].POS == 'LS'||
+                            playersData[i].POS == 'P'||
+                            playersData[i].POS == 'FB') {
+                            console.log('Not initializing this players of this pos currently.', playersData[i]);
+                        } else {
+                            var newPlayer = new Player(playersData[i]);
+                            newPlayer.id = i.toString();
 
-                        Player.players.push(newPlayer);
-                        Player.playerMap[newPlayer.name] = newPlayer; //use new folder as key for now, should be unique (mispellings might cause an issue)
+                            /* using new player name as key for now,
+                            should be unique (mispellings might cause an issue) */
+                            Player.playerMap[newPlayer.name] = newPlayer;
+                            Player.players.push(newPlayer);
+                        }
                     }
                 }
             }
@@ -211,7 +220,7 @@ angular.module('FooBar', [])
             }
         };
 
-        Player.intMetrics = [
+        Player.metrics = [
             {
                 key: 'height',
                 value: 'Height (cm)'
@@ -230,11 +239,11 @@ angular.module('FooBar', [])
             },
             {
                 key: 'broadJump',
-                value: 'Broad jump'
+                value: 'Broad jump (cm)'
             },
             {
                 key: 'benchPress',
-                value: 'Bench press'
+                value: 'Bench press (reps)'
             }
         ];
 

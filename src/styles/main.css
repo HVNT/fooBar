@@ -6,6 +6,10 @@
     height: 100%;
 }
 
+.linegraph-container .highcharts-range-selector-buttons {
+    display: none;
+}
+
 .left-filter-controls-container {
     position: absolute;
     left: 15%;
@@ -27,13 +31,18 @@
     padding: 0;
 }
 
+.foobar-list__item--active {
+    background:  rgb(124, 181, 236) !important;
+    color: white;
+}
+
 .players-table-container {
     position: absolute;
     top: 475px;
     left: 15%;
     right: 15%;
     bottom: 0;
-    height: 400px;
+    height: 300px;
 }
 
 .players-table-container > .players-table {
@@ -46,6 +55,13 @@
     position: relative;
     background: #e7e7e7;
     padding: 12px;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.players-table > .players-table-head:hover {
+    background: #eee;
+    border: 2px solid #e7e7e7;
 }
 
 .players-table > .players-table-body {
@@ -105,5 +121,5 @@
 
 .foobar-list > .foobar-list__item:hover {
     background: #eee;
-    border: 2px solid #777;
+    border: 2px solid #e7e7e7;
 }

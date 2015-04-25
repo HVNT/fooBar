@@ -46,7 +46,9 @@
             <h4>Positions</h4>
 
             <div class="foobar-list">
-                <div ng-repeat="(key, value) in positions" class="foobar-list__item" ng-click="filterPosition(key)">
+                <div data-ng-repeat="(key, value) in positions" class="foobar-list__item"
+                     data-ng-click="filterPosition(key)"
+                     data-ng-class="{'foobar-list__item--active': key === filters.pos}">
                     <span>{{key + ' (' + value.count + ')'}}</span>
                 </div>
             </div>
@@ -56,8 +58,9 @@
             <h4>Metrics</h4>
 
             <div class="foobar-list">
-                <div ng-repeat="metric in Player.intMetrics" class="foobar-list__item"
-                     ng-click="filterMetric(metric)">
+                <div ng-repeat="metric in Player.metrics" class="foobar-list__item"
+                     ng-click="filterMetric(metric)"
+                     data-ng-class="{'foobar-list__item--active': metric == filters.metric}">
                     <span>{{metric.value}}</span>
                 </div>
             </div>
@@ -65,14 +68,16 @@
         <!-- Table -->
         <div class="players-table-container">
             <div class="players-table">
-                <div class="players-table-head">
-                    <span class="players-table-hcell">{{filters.pos}} player names - {{filters.metric.value}}</span>
+                <div class="players-table-head" ng-click="toggleFilter()">
+                    <i class="glyphicon" style="padding: 0 8px 0 4px;" ng-class="{'glyphicon-chevron-up': filters.reverse, 'glyphicon-chevron-down': !filters.reverse}"></i>
+                    <span class="players-table-hcell">Displaying {{filters.pos}} players {{filters.metric.value}}</span>
+                    <span class="pull-right">College (Conference)</span>
                 </div>
                 <div class="players-table-body">
-                    <div class="players-table-row" ng-repeat="player in activePlayers">
+                    <div class="players-table-row" ng-repeat="player in activePlayers | orderBy: filters.metric.key:filters.reverse">
                         <span class="players-table-bcell">{{player.name}}</span>
                         <span style="padding-left: 16px;">{{player[filters.metric.key]}}</span>
-                        <span style="float: right;">{{player.college}}</span>
+                        <span class="pull-right">{{player.college}} ({{player.conference}})</span>
                     </div>
                 </div>
             </div>

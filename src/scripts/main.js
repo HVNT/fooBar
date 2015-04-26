@@ -427,43 +427,43 @@ angular.module('FooBar', [])
         this.conferenceMap = {
             'SEC': {
                 id: 500000,
-                color: 'RED'
+                color: '#EF9A9A'
             },
             'PAC-12': {
                 id: 500001,
-                color: 'GREEN'
+                color: '#A5D6A7'
             },
             'ACC': {
                 id: 500002,
-                color: 'BLUE'
+                color: '#90CAF9'
             },
             'Big Ten': {
                 id: 500003,
-                color: 'ORANGE'
+                color: '#FFCC80'
             },
             'Big 12': {
                 id: 500004,
-                color: 'PURPLE'
+                color: '#A1887F'
             },
             'American': {
                 id: 500005,
-                color: 'YELLOW'
+                color: '#9FA8DA'
             },
             'Mountain West': {
                 id: 500006,
-                color: 'BROWN'
+                color: '#CE93D8'
             },
             'Conference USA': {
                 id: 500007,
-                color: 'PINK'
+                color: '#FFF59D'
             },
             'Independent': {
                 id: 500008,
-                color: 'steelblue'
+                color: '#80CBC4'
             },
             'Other': {
                 id: 500009,
-                color: 'Gray'
+                color: '#B0BEC5'
             }
         };
 

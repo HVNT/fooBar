@@ -509,7 +509,7 @@ angular.module('FooBar', [])
 /* treemap */
 //                    var treeMapData = initTreeMapData();
 //
-//                    var chart = new Highcharts.Chart({
+//  var chart = new Highcharts.Chart({
 //                        chart: {
 //                            renderTo: 'treemap-container'
 //                        },
@@ -520,7 +520,7 @@ angular.module('FooBar', [])
 //                            dataLabels: {
 //                                enabled: false
 //                            },
-//                            levelIsConstant: false,
+//                           levelIsConstant: false,
 //                            levels: [{
 //                                level: 1,
 //                                dataLabels: {
@@ -544,7 +544,7 @@ angular.module('FooBar', [])
 //    initCollegesAndDraftValues();
 //
 //    if (players && players.length > 0) {
-//        for (conference in PlayerUtilities.conferenceMap) {
+//       for (conference in PlayerUtilities.conferenceMap) {
 //            if (PlayerUtilities.conferenceMap.hasOwnProperty(conference)) { //check if exists
 //                if (!runningTreeMapIds[PlayerUtilities.conferenceMap[conference].id]) { //if conference not added, add
 //                    treeMapData.push({
@@ -577,13 +577,13 @@ angular.module('FooBar', [])
 //}
 //
 //function initCollegesAndDraftValues(players) {
-//    if (players && players.length > 0) {
+//   if (players && players.length > 0) {
 //        var pCollege = '',
 //            collegeId = 100000; //start college ids at 100000 to avoid collision
-//        for (var i = 0; i < players.length; i++) {
+//       for (var i = 0; i < players.length; i++) {
 //            pCollege = players[i].college;
 //
-//            if (!CollegeMap[pCollege]) { //doesnt exist in college map, new college
+//   if (!CollegeMap[pCollege]) { //doesnt exist in college map, new college
 //                collegeId++;
 //
 //                CollegeMap[pCollege] = {

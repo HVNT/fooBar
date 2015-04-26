@@ -16,11 +16,11 @@
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
 
     <!--highcharts-->
-    <!--<script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>-->
+    <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
     <!--<script type="text/javascript" src="http://code.highcharts.com/modules/heatmap.js"></script>-->
-    <!--<script type="text/javascript" src="http://code.highcharts.com/modules/treemap.js"></script>-->
+    <script type="text/javascript" src="http://code.highcharts.com/modules/treemap.js"></script>
     <!--highstock-->
-    <script src="http://code.highcharts.com/stock/highstock.js"></script>
+    <!--<script src="http://code.highcharts.com/stock/highstock.js"></script>-->
     <script src="http://code.highcharts.com/stock/modules/exporting.js"></script>
     <script type="text/javascript" src="/vendor/papaparse/papaparse.js"></script>
 
@@ -40,52 +40,70 @@
 
 <div ng-app="FooBar">
 
-    <div ng-controller="FooBarCtrl" class="container">
-        <div class="left-filter-controls-container">
-            <h4>Positions</h4>
+    <div ng-controller="FooBarCtrl">
+        <div class="container">
 
-            <div class="foobar-list">
-                <div data-ng-repeat="(key, value) in positions" class="foobar-list__item"
-                     data-ng-click="filterPosition(key)"
-                     data-ng-class="{'foobar-list__item--active': key === filters.pos}">
-                    <span>{{key + ' (' + value.count + ' players)'}}</span>
+            <div class="left-filter-controls-container">
+                <h4>Positions</h4>
+
+                <div class="foobar-list">
+                    <div data-ng-repeat="(key, value) in positions" class="foobar-list__item"
+                         data-ng-click="filterPosition(key)"
+                         data-ng-class="{'foobar-list__item--active': key === filters.pos}">
+                        <span>{{key + ' (' + value.count + ' players)'}}</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="linegraph-container" id="linegraph-container"></div>
-        <div class="right-filter-controls-container">
-            <h4>Metrics</h4>
+            <div class="bargraph-container" id="bargraph-container"></div>
+            <div class="right-filter-controls-container">
+                <h4>Metrics</h4>
 
-            <div class="foobar-list">
-                <div ng-repeat="metric in Player.metrics" class="foobar-list__item"
-                     ng-click="filterMetric(metric)"
-                     data-ng-class="{'foobar-list__item--active': metric == filters.metric}">
-                    <span>{{metric.value}}</span>
+                <div class="foobar-list">
+                    <div ng-repeat="metric in Player.metrics" class="foobar-list__item"
+                         ng-click="filterMetric(metric)"
+                         data-ng-class="{'foobar-list__item--active': metric == filters.metric}">
+                        <span>{{metric.value}}</span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Table -->
-        <div class="players-table-container">
-            <input class="form-control" type="text"
-                   placeholder="Search for a player."
-                   style="margin-bottom: 16px;"
-                   ng-model="filters.playerSearch"/>
-            <div class="players-table">
-                <div class="players-table-head" ng-click="toggleFilter()">
-                    <i class="glyphicon" style="padding: 0 8px 0 4px;" ng-class="{'glyphicon-chevron-up': filters.reverse, 'glyphicon-chevron-down': !filters.reverse}"></i>
-                    <span class="players-table-hcell">Displaying {{filters.pos}} players {{filters.metric.value}}</span>
-                    <span class="pull-right">College (Conference)</span>
-                </div>
-                <div class="players-table-body">
-                    <div class="players-table-row" ng-repeat="player in activePlayers | orderBy: filters.metric.key:filters.reverse | filter:filters.playerSearch">
-                        <span class="players-table-bcell"><strong>{{player.name}}</strong> - {{player[filters.metric.key]}} in {{player.combineYear}}</span>
-                        <span class="pull-right">{{player.college}} ({{player.conference}})</span>
+            <!-- Table -->
+            <div class="players-table-container">
+                <input class="form-control" type="text"
+                       placeholder="Search for a player."
+                       style="margin-bottom: 16px;"
+                       ng-model="filters.playerSearch"/>
+                <div class="players-table">
+                    <div class="players-table-head" ng-click="toggleFilter()">
+                        <i class="glyphicon" style="padding: 0 8px 0 4px;" ng-class="{'glyphicon-chevron-up': filters.reverse, 'glyphicon-chevron-down': !filters.reverse}"></i>
+                        <span class="players-table-hcell">Displaying {{filters.pos}} players {{filters.metric.value}}</span>
+                        <span class="pull-right">College (Conference)</span>
+                    </div>
+                    <div class="players-table-body">
+                        <div class="players-table-row" ng-repeat="player in activePlayers | orderBy: filters.metric.key:filters.reverse | filter:filters.playerSearch">
+                            <span class="players-table-bcell"><strong>{{player.name}}</strong> - {{player[filters.metric.key]}} in {{player.combineYear}}</span>
+                            <span class="pull-right">{{player.college}} ({{player.conference}})</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
+        <div class="bottom-container">
+            <div class="row">
+                <div class="col-lg-2 col-lg-offset-1">
+                    <div class="rounds-container pull-left">
+                        <strong>Rd. | Assigned Value</strong>
+                        <div ng-repeat="round in rounds">
+                            {{round + ' | ' + PlayerUtilities.weightPick(round) }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="treemap-container" id="treemap-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 </body>

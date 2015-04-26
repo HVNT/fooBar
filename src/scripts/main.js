@@ -9,6 +9,8 @@
 angular.module('FooBar', [])
     .controller('FooBarCtrl', function ($scope, $q, Player, PlayerUtilities) {
         $scope.Player = Player;
+        $scope.rounds = PlayerUtilities.rounds;
+        $scope.PlayerUtilities = PlayerUtilities;
         $scope.activePlayers = [];
 
         $scope.filters = {
@@ -18,16 +20,31 @@ angular.module('FooBar', [])
             reverse: false
         };
 
+        $scope.show = {
+            bargraph: true
+        };
+
+        $scope.toggleVis = function () {
+            $scope.show.bargraph = !$scope.show.bargraph;
+
+            if ($scope.show.bargraph) {
+                repaintBargraph();
+            } else {
+                repaintTreemap();
+            }
+        };
+
         Player.query().then(function () {
             $scope.positions = Player.getPositionsAndWeights(Player.players);
-            repaintGraph();
+            repaintBargraph();
+            repaintTreemap();
         }, function (err) {
             throw new Error(err);
         });
 
         $scope.filterPosition = function (filter) {
             $scope.filters.pos = filter || 'CB';
-            repaintGraph();
+            repaintBargraph();
         };
 
         $scope.filterMetric = function (filter) {
@@ -40,14 +57,14 @@ angular.module('FooBar', [])
                 }
             }
 
-            repaintGraph();
+            repaintBargraph();
         };
 
         $scope.toggleFilter = function () {
             $scope.filters.reverse = !$scope.filters.reverse;
         };
 
-        function repaintGraph() {
+        function repaintBargraph() {
             var repaintData = Player.getMetric($scope.filters.pos, $scope.filters.metric.key);
 
             //getMetric call updates activePlayers for us
@@ -58,7 +75,7 @@ angular.module('FooBar', [])
                 _repaintData.push(Player.getMetricAverage($scope.filters.pos, $scope.filters.metric.key, Player.combineYears[i]));
             }
 
-            $('#linegraph-container').highcharts({
+            $('#bargraph-container').highcharts({
                 chart: {
                     type: 'column'
                 },
@@ -95,24 +112,39 @@ angular.module('FooBar', [])
 
                 }]
             });
+        }
 
-//            $('#linegraph-container').highcharts('StockChart', {
-//                rangeSelector: {
-//                    selected: 5
-//                },
-//                title: {
-//                    text: 'Combine ' + $scope.filters.metric.value + ' ' + $scope.filters.pos
-//                },
-//                series: [
-//                    {
-//                        name: $scope.filters.metric.value,
-//                        data: repaintData,
-//                        tooltip: {
-//                            valueDecimals: 2
-//                        }
-//                    }
-//                ]
-//            });
+        function repaintTreemap() {
+            var treeMapData = Player.getTreemapData();
+
+            var chart = new Highcharts.Chart({
+                chart: {
+                    renderTo: 'treemap-container'
+                },
+                series: [{
+                    type: "treemap",
+                    layoutAlgorithm: 'squarified',
+                    allowDrillToNode: true,
+                    dataLabels: {
+                        enabled: false
+                    },
+                    levelIsConstant: false,
+                    levels: [{
+                        level: 1,
+                        dataLabels: {
+                            enabled: true
+                        },
+                        borderWidth: 2
+                    }],
+                    data: treeMapData
+                }],
+                subtitle: {
+                    text: 'Click to drill down.'
+                },
+                title: {
+                    text: 'Conferences/Colleges with the best Draft Prospects'
+                }
+            });
         }
 
     })
@@ -164,6 +196,32 @@ angular.module('FooBar', [])
             });
 
             return defer.promise;
+        };
+
+        Player.getCollegesAndDraftValues = function () {
+            if (Player.players && Player.players.length > 0) {
+                var pCollege = '',
+                    collegeId = 100000; //start college ids at 100000 to avoid collision
+                for (var i = 0; i < Player.players.length; i++) {
+                    pCollege = Player.players[i].college;
+
+                    if (!PlayerUtilities.collegeMap[pCollege]) { //doesnt exist in college map, new college
+                        collegeId++;
+
+                        PlayerUtilities.collegeMap[pCollege] = {
+                            id: collegeId,
+                            draftValue: PlayerUtilities.weightPick(Player.players[i].round),
+                            numPicks: 1
+                        };
+                    } else {
+                        //id doesnt change..
+                        PlayerUtilities.collegeMap[pCollege].draftValue += PlayerUtilities.weightPick(Player.players[i].round);
+                        PlayerUtilities.collegeMap[pCollege].numPicks++;
+                    }
+
+                    Player.players[i].parent = collegeId; //set parentid for highcharts
+                }
+            }
         };
 
         Player.getPositionsAndWeights = function () {
@@ -225,6 +283,49 @@ angular.module('FooBar', [])
             return metricAvgData / (validPlayers || 1);
         };
 
+        Player.getTreemapData = function () {
+            var treeMapData = [],
+                runningTreeMapIds = {};
+
+            Player.getCollegesAndDraftValues();
+
+            if (Player.players && Player.players.length > 0) {
+
+                for (var conference in PlayerUtilities.conferenceMap) {
+                    if (PlayerUtilities.conferenceMap.hasOwnProperty(conference)) { //check if exists
+
+                        if (!runningTreeMapIds[PlayerUtilities.conferenceMap[conference].id]) { //if conference not added, add
+                            treeMapData.push({
+                                id: PlayerUtilities.conferenceMap[conference].id.toString(),
+                                name: conference,
+                                color: PlayerUtilities.conferenceMap[conference].color
+                            })
+                        }
+                    }
+                }
+
+                for (var college in PlayerUtilities.collegeMap) {
+
+                    if (PlayerUtilities.collegeMap.hasOwnProperty(college)) { //check if exists
+                        if (!runningTreeMapIds[PlayerUtilities.collegeMap[college].id]) { //if college not added, add
+                            runningTreeMapIds[PlayerUtilities.collegeMap[college].id] = 1; //don't re-add
+
+                            treeMapData.push({
+                                id: PlayerUtilities.collegeMap[college].id.toString(),
+                                name: college,
+                                value: PlayerUtilities.collegeMap[college].draftValue,
+                                parent: PlayerUtilities.conferenceMap[PlayerUtilities.collegeConferenceMap[college]] ?
+                                    PlayerUtilities.conferenceMap[PlayerUtilities.collegeConferenceMap[college]].id.toString()
+                                    : '500008' //500008 = id for 'Other' conference
+                            })
+                        }
+                    }
+                }
+            }
+
+            return treeMapData;
+        };
+
         Player._initCleanPlayers = function (playersData) {
             if (playersData && playersData.length > 0) {
                 for (var i = 0; i < playersData.length; i++) {
@@ -234,7 +335,6 @@ angular.module('FooBar', [])
                             playersData[i].POS == 'LS'||
                             playersData[i].POS == 'P'||
                             playersData[i].POS == 'FB') {
-                            console.log('Not initializing this players of this pos currently.', playersData[i]);
                         } else {
                             var newPlayer = new Player(playersData[i]);
                             newPlayer.id = i.toString();
@@ -362,6 +462,10 @@ angular.module('FooBar', [])
             }
         };
 
+        this.collegeMap = {
+
+        };
+
         this.collegeConferenceMap = {
             'Florida': 'SEC',
             'Georgia': 'SEC',
@@ -465,17 +569,20 @@ angular.module('FooBar', [])
             'Western Kentucky': 'Conference USA'
         };
 
+        this.rounds = [1, 2, 3, 4, 5, 6, 7];
+
         this.weightPick = function (round) {
             var weight = 0;
+
             switch (round) {
                 case 1:
-                    weight = 7;
+                    weight = 15;
                     break;
                 case 2:
-                    weight = 6;
+                    weight = 9;
                     break;
                 case 3:
-                    weight = 5;
+                    weight = 6;
                     break;
                 case 4:
                     weight = 4;
@@ -497,108 +604,3 @@ angular.module('FooBar', [])
         };
 
     });
-
-////////////////////////////////////////////////////
-////////////////////////////////////////////////////
-////////////////////////////////////////////////////
-// DEPRECATED TREE MAP STUFF IS DOWN HERE, WE CAN USE IF YALL WANT
-////////////////////////////////////////////////////
-////////////////////////////////////////////////////
-////////////////////////////////////////////////////
-
-/* treemap */
-//                    var treeMapData = initTreeMapData();
-//
-//                    var chart = new Highcharts.Chart({
-//                        chart: {
-//                            renderTo: 'treemap-container'
-//                        },
-//                        series: [{
-//                            type: "treemap",
-//                            layoutAlgorithm: 'squarified',
-//                            allowDrillToNode: true,
-//                            dataLabels: {
-//                                enabled: false
-//                            },
-//                            levelIsConstant: false,
-//                            levels: [{
-//                                level: 1,
-//                                dataLabels: {
-//                                    enabled: true
-//                                },
-//                                borderWidth: 3
-//                            }],
-//                            data: treeMapData
-//                        }],
-//                        subtitle: {
-//                            text: 'Click to drill down.'
-//                        },
-//                        title: {
-//                            text: 'Conferences/Colleges with the best Draft Prospects'
-//                        }
-//                    });
-//function initTreeMapData() {
-//    var treeMapData = [],
-//        runningTreeMapIds = {};
-//
-//    initCollegesAndDraftValues();
-//
-//    if (players && players.length > 0) {
-//        for (conference in PlayerUtilities.conferenceMap) {
-//            if (PlayerUtilities.conferenceMap.hasOwnProperty(conference)) { //check if exists
-//                if (!runningTreeMapIds[PlayerUtilities.conferenceMap[conference].id]) { //if conference not added, add
-//                    treeMapData.push({
-//                        id: PlayerUtilities.conferenceMap[conference].id.toString(),
-//                        name: conference,
-//                        color: PlayerUtilities.conferenceMap[conference].color
-//                    })
-//                }
-//            }
-//        }
-//
-//        for (college in CollegeMap) {
-//            if (CollegeMap.hasOwnProperty(college)) { //check if exists
-//                if (!runningTreeMapIds[CollegeMap[college].id]) { //if college not added, add
-//                    runningTreeMapIds[CollegeMap[college].id] = 1; //don't re-add
-//
-//                    treeMapData.push({
-//                        id: CollegeMap[college].id.toString(),
-//                        name: college,
-//                        value: CollegeMap[college].draftValue,
-//                        parent: ConferenceMap[CollegeConferenceMap[college]] ?
-//                            ConferenceMap[CollegeConferenceMap[college]].id.toString() : '500008' //500008 = id for 'Other' conference
-//                    })
-//                }
-//            }
-//        }
-//    }
-//
-//    return treeMapData;
-//}
-//
-//function initCollegesAndDraftValues(players) {
-//    if (players && players.length > 0) {
-//        var pCollege = '',
-//            collegeId = 100000; //start college ids at 100000 to avoid collision
-//        for (var i = 0; i < players.length; i++) {
-//            pCollege = players[i].college;
-//
-//            if (!CollegeMap[pCollege]) { //doesnt exist in college map, new college
-//                collegeId++;
-//
-//                CollegeMap[pCollege] = {
-//                    id: collegeId,
-//                    draftValue: PlayerUtilities.weightPick(players[i].round),
-//                    numPicks: 1
-//                };
-//            } else {
-//                //id doesnt change..
-//                CollegeMap[pCollege].draftValue += PlayerUtilities.weightPick(players[i].round);
-//                CollegeMap[pCollege].numPicks++;
-//            }
-//
-//            players[i].parent = collegeId; //set parentid for highcharts
-//        }
-//    }
-//}
-

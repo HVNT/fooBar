@@ -142,7 +142,7 @@ angular.module('FooBar', [])
                     text: 'Click to drill down.'
                 },
                 title: {
-                    text: 'Number of Players sent to the NFL Combine since 1999.'
+                    text: 'Distribution of Players Sent to the Combine since 1999'
                 }
             });
         }

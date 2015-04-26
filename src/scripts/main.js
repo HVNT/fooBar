@@ -48,7 +48,7 @@ angular.module('FooBar', [])
         };
 
         function repaintGraph() {
-//            var repaintData = Player.getMetric($scope.filters.pos, $scope.filters.metric.key);
+            var repaintData = Player.getMetric($scope.filters.pos, $scope.filters.metric.key);
 
             //getMetric call updates activePlayers for us
             $scope.activePlayers = Player.activePlayers;
@@ -216,7 +216,7 @@ angular.module('FooBar', [])
                         && this.players[i].pos === position && this.players[i][metric]) {
                         metricAvgData += this.players[i][metric];
                         validPlayers++;
-                        this.activePlayers.push(this.players[i]);
+//                        this.activePlayers.push(this.players[i]);
                     }
                 }
             } else {

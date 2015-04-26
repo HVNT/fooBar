@@ -89,16 +89,16 @@
         </div>
 
         <div class="bottom-container">
-            <div class="row">
-                <div class="col-lg-2 col-lg-offset-1">
-                    <div class="rounds-container pull-left">
-                        <strong>Rd. Pick | Assigned Value</strong>
-                        <div ng-repeat="round in rounds">
-                            {{round + ' | ' + PlayerUtilities.weightPick(round) }}
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-8">
+            <div class="row" style="margin: 0;">
+                <!--<div class="col-lg-2 col-lg-offset-1">-->
+                    <!--<div class="rounds-container pull-left">-->
+                        <!--<strong>Rd. Pick | Assigned Value</strong>-->
+                        <!--<div ng-repeat="round in rounds">-->
+                            <!--{{round + ' | ' + PlayerUtilities.weightPick(round) }}-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <div class="col-lg-10 col-lg-offset-1">
                     <div class="treemap-container" id="treemap-container"></div>
                 </div>
             </div>

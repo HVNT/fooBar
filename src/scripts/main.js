@@ -142,7 +142,7 @@ angular.module('FooBar', [])
                     text: 'Click to drill down.'
                 },
                 title: {
-                    text: 'Conferences/Colleges with the best Draft Prospects'
+                    text: 'Number of Players sent to the NFL Combine since 1999.'
                 }
             });
         }

@@ -205,6 +205,7 @@ angular.module('FooBar', [])
                 for (var i = 0; i < Player.players.length; i++) {
                     pCollege = Player.players[i].college;
 
+                    //lets do just straight picks for now?
                     if (!PlayerUtilities.collegeMap[pCollege]) { //doesnt exist in college map, new college
                         collegeId++;
 
@@ -313,10 +314,10 @@ angular.module('FooBar', [])
                             treeMapData.push({
                                 id: PlayerUtilities.collegeMap[college].id.toString(),
                                 name: college,
-                                value: PlayerUtilities.collegeMap[college].draftValue,
+                                value: PlayerUtilities.collegeMap[college].numPicks,
                                 parent: PlayerUtilities.conferenceMap[PlayerUtilities.collegeConferenceMap[college]] ?
                                     PlayerUtilities.conferenceMap[PlayerUtilities.collegeConferenceMap[college]].id.toString()
-                                    : '500008' //500008 = id for 'Other' conference
+                                    : '500009' //500008 = id for 'Other' conference
                             })
                         }
                     }
@@ -456,8 +457,12 @@ angular.module('FooBar', [])
                 id: 500007,
                 color: 'PINK'
             },
-            'Other': {
+            'Independent': {
                 id: 500008,
+                color: 'steelblue'
+            },
+            'Other': {
+                id: 500009,
                 color: 'Gray'
             }
         };
@@ -566,7 +571,9 @@ angular.module('FooBar', [])
             'UTEP': 'Conference USA',
             'UAB': 'Conference USA',
             'UTSA': 'Conference USA',
-            'Western Kentucky': 'Conference USA'
+            'Western Kentucky': 'Conference USA',
+            'Notre Dame': 'Independent',
+            'BYU': 'Independent'
         };
 
         this.rounds = [1, 2, 3, 4, 5, 6, 7];
